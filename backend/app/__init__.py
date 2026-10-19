@@ -1,0 +1,1 @@
+"""BuildLog FastAPI application package."""
