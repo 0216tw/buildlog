@@ -361,21 +361,21 @@ BuildLog는 다음과 같이 이 불편을 줄입니다.
 
 ## 10. 개발 기술
 
-화면과 서버를 분리하고, 같은 API를 사용해 로컬 테스트와 실제 서비스 데이터베이스에 연결할 수 있는 구성을 사용합니다.
+화면과 서버를 분리하고, React가 FastAPI API를 통해 Supabase PostgreSQL 데이터베이스를 사용하도록 구성합니다.
 
 | 구분 | 사용할 기술 | 선택 이유 |
 | --- | --- | --- |
 | 화면 | React, HTML, CSS, JavaScript | 화면을 컴포넌트 단위로 나누고 FastAPI와 API로 통신하기 위함 |
 | 서버 | Python, FastAPI | 회원, 권한, 기록 기능을 API로 나누어 구현하기 위함 |
-| 실제 서비스 데이터베이스 | Supabase의 PostgreSQL 데이터베이스 | 여러 사용자의 데이터를 실제 서비스 환경에 영구 저장하기 위함 |
-| 테스트 데이터베이스 | SQLite3 | 자동 테스트에서 실제 서비스 데이터를 건드리지 않고 빠르게 기능을 확인하기 위함 |
-| 데이터 연결과 변경 관리 | SQLAlchemy, Alembic | FastAPI가 Supabase PostgreSQL과 테스트용 SQLite3를 같은 데이터 구조로 다루고 변경 이력을 관리하기 위함 |
+| 실행 데이터베이스 | Supabase PostgreSQL | 여러 사용자의 새 데이터를 실제 서비스 DB에 저장하기 위함 |
+| 테스트 데이터베이스 | 메모리 SQLite3 | Supabase 데이터를 건드리지 않고 빠르게 기능을 확인하기 위함 |
+| 데이터 연결과 변경 관리 | SQLAlchemy, Alembic | FastAPI가 PostgreSQL에 연결하고 데이터 구조의 변경 이력을 관리하기 위함 |
 
 React 화면은 FastAPI API를 호출하며, 브라우저에서 데이터베이스에 직접 접근하지 않습니다. 데이터 조회·저장, 로그인 확인, 권한 검사는 FastAPI에서 처리합니다.
 
-Supabase는 첫 MVP에서 데이터베이스로 사용합니다. 회원가입과 로그인 규칙은 FastAPI에서 구현하고, Supabase Auth는 사용하지 않습니다. 이렇게 해야 이메일 확인과 비밀번호 찾기를 추가하지 않으면서 테스트용 SQLite3에서도 같은 규칙을 확인할 수 있습니다.
+실행 환경은 Supabase의 Session pooler를 통해 PostgreSQL에 연결합니다. 회원가입과 로그인 규칙은 계속 FastAPI에서 구현하며 Supabase Auth는 사용하지 않습니다.
 
-자동 테스트는 별도의 SQLite3 데이터베이스를 사용합니다. 테스트가 실제 Supabase 데이터에 기록을 만들거나 기존 데이터를 변경해서는 안 됩니다. Supabase 연결 주소와 비밀값은 `.env`에만 저장하고 React 코드나 Git 기록에 포함하지 않습니다.
+자동 테스트는 별도의 메모리 SQLite3를 사용합니다. 테스트가 Supabase 데이터를 만들거나 변경해서는 안 됩니다. 기존 SQLite3 파일과 데이터는 보존하지만 자동으로 이전하지 않습니다. 연결 문자열과 비밀번호는 `backend/.env`에만 저장하고 React 코드, 문서, Git 기록에 포함하지 않습니다.
 
 정확한 버전은 개발을 시작할 때 서로 호환되는 안정 버전으로 정합니다.
 

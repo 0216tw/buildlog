@@ -1,8 +1,10 @@
 # BuildLog MVP 개발 계획
 
+> 진행 상태 (2026-10-20): Phase 0~13 구현 완료. SQLite 자동 테스트, React 테스트·빌드, Supabase 마이그레이션과 API 스모크 테스트를 통과했습니다. Chrome·Edge 수동 조작, Safari 및 실제 모바일 기기 확인은 남아 있습니다.
+
 ## 1. 계획의 목적
 
-이 문서는 `PRD.md`와 `spec.md`에 정한 BuildLog 기능을 React, FastAPI, Supabase로 어떤 순서로 개발할지 설명합니다.
+이 문서는 `PRD.md`와 `spec.md`에 정한 BuildLog 기능을 React, FastAPI, Supabase PostgreSQL로 어떤 순서로 개발할지 설명합니다.
 
 처음 개발하는 과정에서 한 번에 너무 많은 내용을 다루지 않도록 작업을 작은 Phase로 나눕니다. 한 번에는 Phase 하나만 진행하고, 확인 기준을 모두 통과한 뒤 다음 Phase로 넘어갑니다.
 
@@ -14,10 +16,10 @@
 | API 서버 | Python, FastAPI | `backend/` |
 | 데이터 처리 | SQLAlchemy | FastAPI와 데이터베이스 연결 |
 | 데이터 구조 변경 | Alembic | 데이터베이스 마이그레이션 |
-| 실제 서비스 데이터베이스 | Supabase PostgreSQL | 개발 확인 및 실제 서비스 데이터 저장 |
-| 자동 테스트 데이터베이스 | SQLite3 | 실제 데이터를 건드리지 않는 독립 테스트 |
+| 실행 데이터베이스 | Supabase PostgreSQL | 개발 확인 및 새 서비스 데이터 저장 |
+| 자동 테스트 데이터베이스 | 메모리 SQLite3 | Supabase 데이터를 건드리지 않는 독립 테스트 |
 
-Supabase는 데이터베이스로 사용합니다. 첫 MVP의 회원가입과 로그인은 FastAPI에서 처리하고 Supabase Auth는 사용하지 않습니다. React는 Supabase에 직접 접속하지 않고 반드시 FastAPI API를 거칩니다.
+현재 MVP 실행 환경은 Supabase Session pooler를 통해 PostgreSQL을 사용합니다. 첫 MVP의 회원가입과 로그인은 FastAPI에서 처리하며 React는 반드시 FastAPI API를 거칩니다. 기존 SQLite3 파일은 보존하고 데이터 이전은 별도 작업으로 남깁니다.
 
 ## 3. 개발 원칙
 
@@ -25,10 +27,9 @@ Supabase는 데이터베이스로 사용합니다. 첫 MVP의 회원가입과 �
 - 각 Phase가 끝날 때 백엔드 자동 테스트와 프론트엔드 화면 확인을 수행합니다.
 - 확인에 실패하면 다음 Phase로 넘어가지 않고 현재 Phase만 수정합니다.
 - React에서 버튼을 숨기는 것만으로 권한을 처리하지 않습니다. FastAPI에서도 사용자와 권한을 검사합니다.
-- 비밀번호, Supabase 연결 주소, 비밀키는 코드나 화면에 기록하지 않습니다.
+- 비밀번호와 API 키 같은 비밀값은 코드나 화면에 기록하지 않습니다.
 - 정상 실행 환경과 테스트 환경의 데이터베이스를 환경 변수로 명확히 분리합니다.
-- 자동 테스트는 SQLite3만 사용하고 Supabase 데이터를 만들거나 수정하지 않습니다.
-- PostgreSQL과 SQLite3에서 공통으로 동작하는 데이터 형식과 쿼리를 우선 사용합니다.
+- 자동 테스트는 별도의 메모리 SQLite3만 사용하고 Supabase 데이터를 만들거나 수정하지 않습니다.
 - 실제 SQLite3 데이터 파일, `.env`, `.venv`, `node_modules`, 로그와 빌드 결과는 Git 기록 대상에서 제외합니다.
 - Git 초기화와 커밋은 별도 요청이 있기 전까지 수행하지 않습니다.
 - 패키지는 해당 Phase에 필요한 최소 범위만 설치합니다.
@@ -79,7 +80,7 @@ buildlog/
 | --- | --- | --- |
 | 0 | 기술 기준과 실행 환경 확인 | 문서, 도구, 환경 변수 계획에 충돌이 없음 |
 | 1 | 실행 가능한 FastAPI와 React 뼈대 | 두 개발 서버가 실행되고 React가 FastAPI 상태 API를 호출함 |
-| 2 | 데이터베이스 연결과 사용자 데이터 구조 | SQLite3 테스트와 Supabase 연결·마이그레이션 확인 |
+| 2 | 데이터베이스 연결과 사용자 데이터 구조 | Supabase PostgreSQL·테스트용 SQLite3 분리와 마이그레이션 확인 |
 | 3 | 회원가입·로그인·닉네임 | 회원 API, 화면, 접근 제한 테스트 통과 |
 | 4 | 세 가지 기록의 데이터 구조 | 두 DB에서 사용할 모델과 상태 규칙 테스트 통과 |
 | 5 | 공부 기록 전체 흐름 | 공부 기록 API와 React 화면 완성 |
@@ -111,12 +112,11 @@ buildlog/
    - 댓글 답글
 3. 설치된 Python, Node.js, npm의 실행 여부와 버전을 읽기 전용으로 확인합니다.
 4. 서로 호환되는 FastAPI, React, SQLAlchemy, Alembic 버전 기준을 정합니다.
-5. Python에서 SQLite3를 사용할 수 있는지 확인합니다.
-6. Supabase 프로젝트 준비 여부만 확인하고 비밀값은 출력하지 않습니다.
+5. Python에서 테스트용 SQLite3를 사용할 수 있는지 확인합니다.
+6. Supabase Session pooler 준비 여부와 기존 SQLite3 보존 여부를 확인합니다.
 7. 다음 환경 변수 이름과 용도를 정리합니다.
-   - `DATABASE_URL`: Supabase PostgreSQL 연결 주소
-   - `TEST_DATABASE_URL`: 테스트용 SQLite3 연결 주소
-   - `SECRET_KEY`: 로그인 정보를 안전하게 서명할 서버 비밀값
+   - `DATABASE_URL`: Supabase Session pooler PostgreSQL 연결 주소
+   - `TEST_DATABASE_URL`: 테스트용 메모리 SQLite3 연결 주소
    - `FRONTEND_ORIGIN`: FastAPI가 요청을 허용할 React 주소
    - `VITE_API_BASE_URL`: React가 호출할 FastAPI 주소
 8. 개발 주소는 기본적으로 React `http://localhost:5173`, FastAPI `http://127.0.0.1:8000`을 사용합니다.
@@ -131,7 +131,7 @@ buildlog/
 
 - 세 문서에서 기능 범위와 기술 구성이 충돌하지 않는지 확인합니다.
 - Python, Node.js, npm, SQLite3 확인 명령의 실제 결과를 기록합니다.
-- Supabase 비밀값이 문서, 명령 출력, Git 대상 파일에 들어가지 않았는지 확인합니다.
+- `.env`와 실제 SQLite3 데이터 파일이 Git 대상에 들어가지 않았는지 확인합니다.
 - 아직 패키지를 설치하거나 데이터베이스를 만들지 않았는지 확인합니다.
 
 #### 완료 조건
@@ -191,13 +191,13 @@ buildlog/
 
 #### 목표
 
-FastAPI가 Supabase PostgreSQL과 테스트용 SQLite3를 안전하게 구분하고, 회원 데이터를 저장할 구조를 만듭니다.
+FastAPI가 Supabase PostgreSQL과 테스트용 메모리 SQLite3를 안전하게 구분하고, 회원 데이터를 저장할 구조를 만듭니다.
 
 #### 작업
 
 1. SQLAlchemy 데이터베이스 연결과 요청별 세션 구조를 만듭니다.
-2. 실행 환경은 `DATABASE_URL`, 자동 테스트는 `TEST_DATABASE_URL`만 사용하게 분리합니다.
-3. 테스트 실행 중 `DATABASE_URL`을 사용하지 못하도록 안전 검사를 둡니다.
+2. 실행 환경은 `backend/.env`의 `DATABASE_URL`, 자동 테스트는 `TEST_DATABASE_URL`을 사용하게 분리합니다.
+3. 테스트에는 SQLite3 연결 주소만 사용할 수 있도록 안전 검사를 둡니다.
 4. Alembic을 준비하고 첫 변경 이력을 만듭니다.
 5. 사용자 모델을 만듭니다.
    - 이메일: 필수, 중복 불가
@@ -206,7 +206,7 @@ FastAPI가 Supabase PostgreSQL과 테스트용 SQLite3를 안전하게 구분하
    - 운영자 여부 저장
 6. 이메일 형식, 비밀번호 8~64자, 닉네임 2~20자와 허용 문자를 검사할 스키마를 준비합니다.
 7. SQLite3에서 사용자 모델과 제약 조건을 자동 테스트합니다.
-8. Supabase PostgreSQL에 Alembic 변경 이력을 적용하고 연결을 확인합니다.
+8. 사용자가 연결 정보를 입력한 뒤 Supabase PostgreSQL에 Alembic 변경 이력을 적용하고 연결을 확인합니다.
 
 #### 예상 변경 파일
 
@@ -223,13 +223,13 @@ FastAPI가 Supabase PostgreSQL과 테스트용 SQLite3를 안전하게 구분하
 - 테스트가 SQLite3를 사용했다는 사실을 확인합니다.
 - 같은 이메일이나 닉네임의 중복 저장이 차단되는지 확인합니다.
 - 비밀번호 원문이 데이터베이스에 저장되지 않는지 확인합니다.
-- Alembic 변경 이력이 SQLite3 테스트와 Supabase PostgreSQL에 적용되는지 확인합니다.
-- 테스트 전후 Supabase의 기존 데이터가 바뀌지 않았는지 확인합니다.
+- Alembic 변경 이력이 Supabase PostgreSQL에 한 번만 적용되는지 확인합니다.
+- 테스트 전후 Supabase 데이터가 바뀌지 않았는지 확인합니다.
 
 #### 완료 조건
 
 - 사용자 모델 테스트와 첫 마이그레이션이 통과해야 합니다.
-- Supabase와 SQLite3의 환경 분리가 확인되어야 합니다.
+- Supabase PostgreSQL과 테스트용 메모리 SQLite3의 분리가 확인되어야 합니다.
 
 ---
 
@@ -301,7 +301,7 @@ FastAPI가 Supabase PostgreSQL과 테스트용 SQLite3를 안전하게 구분하
 7. 작성자와 사용자 모델을 연결하고 삭제·조회 규칙을 정합니다.
 8. Alembic 변경 이력을 만들고 적용합니다.
 9. SQLite3에서 저장, 상태 전환, 날짜 처리 테스트를 작성합니다.
-10. Supabase PostgreSQL에 같은 변경 이력을 적용해 호환성을 확인합니다.
+10. Supabase PostgreSQL에 같은 변경 이력을 적용합니다.
 
 #### 예상 변경 파일
 
@@ -317,7 +317,7 @@ FastAPI가 Supabase PostgreSQL과 테스트용 SQLite3를 안전하게 구분하
 - 기본 공개·완료·해결 상태가 맞는지 확인합니다.
 - 완료·해결 상태 전환에 따라 날짜가 생기거나 지워지는지 확인합니다.
 - 오류를 미해결로 되돌려도 해결 방법은 유지되는지 확인합니다.
-- Supabase PostgreSQL에서도 같은 데이터 구조가 만들어지는지 확인합니다.
+- Supabase PostgreSQL에도 같은 데이터 구조가 만들어지는지 확인합니다.
 
 #### 완료 조건
 
@@ -586,7 +586,7 @@ FastAPI가 Supabase PostgreSQL과 테스트용 SQLite3를 안전하게 구분하
 
 1. SQLite3를 사용하는 백엔드 전체 자동 테스트를 실행합니다.
 2. 프론트엔드 전체 테스트와 프로덕션 빌드를 실행합니다.
-3. Supabase 연결 환경에서 Alembic 변경 이력과 주요 기능을 확인합니다.
+3. Supabase PostgreSQL에서 Alembic 변경 이력과 주요 기능을 확인합니다.
 4. 사용자 A, 사용자 B, 운영자 계정으로 권한 시나리오를 확인합니다.
 5. 서버를 종료하고 다시 실행한 뒤 Supabase 데이터 유지 여부를 확인합니다.
 6. 비공개 기록이 목록, 검색, 직접 API 호출에서 노출되지 않는지 다시 확인합니다.
@@ -615,8 +615,8 @@ FastAPI가 Supabase PostgreSQL과 테스트용 SQLite3를 안전하게 구분하
 - [ ] 댓글과 기록의 수정·삭제 권한이 정확합니다.
 - [ ] 좋아요 중복이 방지되고 취소와 개수가 정확합니다.
 - [ ] 신고 중복이 방지되고 운영자만 신고 내용을 봅니다.
-- [ ] SQLite3 자동 테스트가 Supabase 데이터를 변경하지 않습니다.
-- [ ] Supabase에 적용한 데이터가 서버 재실행 후에도 남아 있습니다.
+- [ ] 메모리 SQLite3 자동 테스트가 Supabase 데이터를 변경하지 않습니다.
+- [ ] Supabase에 저장한 데이터가 서버 재실행 후에도 남아 있습니다.
 - [ ] 360px 이상 화면과 지정 브라우저에서 주요 기능을 사용할 수 있습니다.
 - [ ] 첫 버전 범위 밖 기능이 추가되지 않았습니다.
 
