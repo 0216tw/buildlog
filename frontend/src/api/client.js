@@ -1,4 +1,4 @@
-export const apiBaseUrl = import.meta.env?.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000/api'
+export const apiBaseUrl = import.meta.env?.VITE_API_BASE_URL ?? 'http://localhost:8000/api'
 
 export class ApiError extends Error {
   constructor(message, status) {
@@ -9,11 +9,12 @@ export class ApiError extends Error {
 }
 
 export async function apiRequest(path, options = {}, fetchImpl = fetch) {
+  const bodyIsFormData = typeof FormData !== 'undefined' && options.body instanceof FormData
   const response = await fetchImpl(`${apiBaseUrl}${path}`, {
     ...options,
     credentials: 'include',
     headers: {
-      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+      ...(options.body && !bodyIsFormData ? { 'Content-Type': 'application/json' } : {}),
       ...options.headers,
     },
   })

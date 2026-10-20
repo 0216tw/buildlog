@@ -1,5 +1,5 @@
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -87,6 +87,10 @@ class Settings:
         "SESSION_COOKIE_SECURE",
         "false",
     ).lower() == "true"
+    openai_api_key: str | None = field(
+        default_factory=lambda: os.getenv("OPENAI_API_KEY", "").strip() or None,
+        repr=False,
+    )
 
 
 settings = Settings()

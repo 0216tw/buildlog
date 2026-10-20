@@ -6,6 +6,7 @@ from app.schemas.interactions import (
     ReportCreate,
     ReportResponse,
 )
+from app.schemas.materials import MaterialResponse, MaterialText
 from app.schemas.records import (
     ErrorResponse,
     ErrorWrite,
@@ -26,6 +27,8 @@ __all__ = [
     "ErrorWrite",
     "LikeResponse",
     "LoginRequest",
+    "MaterialResponse",
+    "MaterialText",
     "NicknameUpdateRequest",
     "PublicRecordResponse",
     "ReportCreate",

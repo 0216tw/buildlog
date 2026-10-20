@@ -18,6 +18,10 @@ htmlcov/
 .coverage
 *.egg-info/
 
+# Uploaded learning materials (keep only the placeholder)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
 # Local database files
 *.sqlite3
 *.db

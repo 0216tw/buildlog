@@ -46,6 +46,7 @@ function HomePage({ navigate }) {
               <button className="primary-button" type="button" onClick={() => navigate('/studies')}>공부 기록</button>
               <button className="secondary-button" type="button" onClick={() => navigate('/todos')}>할 일</button>
               <button className="secondary-button" type="button" onClick={() => navigate('/errors')}>오류 기록</button>
+              <button className="secondary-button" type="button" onClick={() => navigate('/materials')}>학습 자료함</button>
               <button className="secondary-button" type="button" onClick={() => navigate('/public')}>공개 기록</button>
               <button className="secondary-button" type="button" onClick={() => navigate('/settings')}>계정 설정</button>
             </div>

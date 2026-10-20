@@ -1,0 +1,771 @@
+.materials-page {
+  --materials-bg: #f5f6f8;
+  --materials-white: #ffffff;
+  --materials-blue: #3182f6;
+  --materials-pale: #eaf3ff;
+  --materials-ink: #191f28;
+  --materials-muted: #6b7684;
+  display: flex;
+  min-height: 100vh;
+  color: var(--materials-ink);
+  background: var(--materials-bg);
+  font-family: "Noto Sans KR", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  word-break: keep-all;
+}
+
+.materials-page *,
+.materials-page *::before,
+.materials-page *::after {
+  box-sizing: border-box;
+}
+
+.materials-page button,
+.materials-page input,
+.materials-page textarea {
+  font: inherit;
+}
+
+.materials-page button {
+  border: 0;
+  cursor: pointer;
+}
+
+.materials-page__sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  width: 224px;
+  height: 1080px;
+  min-height: 100vh;
+  flex: 0 0 224px;
+  flex-direction: column;
+  padding: 24px;
+  background: var(--materials-white);
+}
+
+.materials-page__brand {
+  align-self: flex-start;
+  padding: 0;
+  color: var(--materials-blue);
+  background: transparent;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 38px;
+}
+
+.materials-page__brand span {
+  margin-right: 6px;
+}
+
+.materials-page__workspace-label {
+  margin: 28px 0 28px;
+  color: var(--materials-muted);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 15px;
+}
+
+.materials-page__nav {
+  display: grid;
+  gap: 28px;
+}
+
+.materials-page__nav-item {
+  width: 176px;
+  height: 46px;
+  padding: 12px;
+  border-radius: 10px;
+  color: var(--materials-muted);
+  background: transparent;
+  font-size: 14px;
+  line-height: 21px;
+  text-align: left;
+}
+
+.materials-page__nav-item:hover,
+.materials-page__nav-item:focus-visible {
+  color: var(--materials-blue);
+  background: #f4f8ff;
+  outline: none;
+}
+
+.materials-page__nav-item--active {
+  color: var(--materials-blue);
+  background: var(--materials-pale);
+  font-weight: 700;
+}
+
+.materials-page__private-note {
+  width: 176px;
+  min-height: 100px;
+  margin-top: 28px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--materials-bg);
+}
+
+.materials-page__private-note strong {
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.materials-page__private-note p {
+  margin: 8px 0 0;
+  color: var(--materials-muted);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.materials-page__account {
+  margin-top: auto;
+  padding: 0;
+  color: var(--materials-muted);
+  background: transparent;
+  font-size: 13px;
+  line-height: 20px;
+  text-align: left;
+}
+
+.materials-page__main {
+  display: flex;
+  width: calc(100% - 224px);
+  max-width: 1216px;
+  min-height: 1080px;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 28px;
+  padding: 40px;
+}
+
+.materials-page__heading {
+  display: grid;
+  gap: 8px;
+  min-height: 104px;
+}
+
+.materials-page__heading p,
+.materials-page__heading h1,
+.materials-page__heading span {
+  margin: 0;
+}
+
+.materials-page__heading p {
+  color: var(--materials-blue);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 17px;
+}
+
+.materials-page__heading h1 {
+  font-size: 32px;
+  line-height: 48px;
+}
+
+.materials-page__heading span {
+  color: var(--materials-muted);
+  font-size: 15px;
+  line-height: 23px;
+}
+
+.materials-page__workspace {
+  display: grid;
+  grid-template-columns: 400px minmax(0, 712px);
+  gap: 24px;
+}
+
+.materials-page__upload-card {
+  display: flex;
+  min-height: 682px;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px;
+  border-radius: 24px;
+  background: var(--materials-white);
+}
+
+.materials-page__upload-card h2,
+.materials-page__upload-card p {
+  margin: 0;
+}
+
+.materials-page__upload-card h2,
+.materials-page__library h2 {
+  font-size: 21px;
+  line-height: 32px;
+}
+
+.materials-page__upload-copy {
+  color: var(--materials-muted);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.materials-page__field {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.materials-page__field input,
+.materials-page__field textarea {
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  color: var(--materials-ink);
+  background: var(--materials-bg);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  outline: none;
+}
+
+.materials-page__field input {
+  height: 48px;
+  padding: 14px;
+}
+
+.materials-page__field textarea {
+  height: 70px;
+  padding: 14px;
+  resize: none;
+}
+
+.materials-page__field input:focus,
+.materials-page__field textarea:focus {
+  box-shadow: 0 0 0 2px rgb(49 130 246 / 22%);
+}
+
+.materials-page__field input::placeholder,
+.materials-page__field textarea::placeholder {
+  color: var(--materials-muted);
+  opacity: 1;
+}
+
+.materials-page__field-error {
+  color: #d92d20;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 17px;
+}
+
+.materials-page__file-box {
+  display: flex;
+  min-height: 184px;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  border-radius: 16px;
+  background: var(--materials-pale);
+}
+
+.materials-page__upload-icon {
+  color: var(--materials-blue);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 42px;
+}
+
+.materials-page__file-box strong {
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.materials-page__file-box p {
+  color: var(--materials-muted);
+  font-size: 11px;
+  line-height: 17px;
+}
+
+.materials-page__file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.materials-page__file-box .materials-page__selected-file {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--materials-ink);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.materials-page__file-box button {
+  width: 120px;
+  height: 36px;
+  border-radius: 12px;
+  color: var(--materials-white);
+  background: var(--materials-blue);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.materials-page button:disabled {
+  cursor: not-allowed;
+}
+
+.materials-page__privacy-copy,
+.materials-page__next-step {
+  color: var(--materials-muted);
+  font-size: 11px;
+  line-height: 17px;
+}
+
+.materials-page__ai-notice {
+  margin: -8px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #175cd3;
+  background: #eff8ff;
+  font-size: 11px;
+  line-height: 17px;
+}
+
+.materials-page__upload-button {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  color: var(--materials-white);
+  background: var(--materials-blue);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.materials-page__file-box button:disabled,
+.materials-page__upload-button:disabled {
+  opacity: .72;
+}
+
+.materials-page__message {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.materials-page__message--success {
+  color: #067647;
+  background: #ecfdf3;
+}
+
+.materials-page__message--error {
+  color: #b42318;
+  background: #fef3f2;
+}
+
+.materials-page__library {
+  min-width: 0;
+}
+
+.materials-page__library-header {
+  display: flex;
+  height: 40px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.materials-page__library-header h2 {
+  margin: 0;
+}
+
+.materials-page__library-header h2 span {
+  margin-left: 12px;
+  color: var(--materials-blue);
+}
+
+.materials-page__example-badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: var(--materials-blue);
+  background: var(--materials-pale);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.materials-page__filters {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.materials-page__filters button {
+  width: 92px;
+  height: 36px;
+  border-radius: 18px;
+  color: var(--materials-muted);
+  background: var(--materials-white);
+  font-size: 12px;
+}
+
+.materials-page__filters button:hover,
+.materials-page__filters button:focus-visible {
+  color: var(--materials-blue);
+  outline: 2px solid rgb(49 130 246 / 18%);
+}
+
+.materials-page__filters .materials-page__filter--active {
+  color: var(--materials-white);
+  background: var(--materials-ink);
+  font-weight: 700;
+}
+
+.materials-page__list {
+  display: grid;
+  gap: 16px;
+}
+
+.materials-page__list-state {
+  margin: 0;
+  padding: 36px 18px;
+  border-radius: 18px;
+  color: var(--materials-muted);
+  background: var(--materials-white);
+  font-size: 13px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.materials-page__list-state p {
+  margin: 0 0 12px;
+}
+
+.materials-page__list-state button {
+  padding: 8px 14px;
+  border-radius: 10px;
+  color: var(--materials-white);
+  background: var(--materials-blue);
+}
+
+.materials-page__list-state--error {
+  color: #b42318;
+}
+
+.materials-page__item {
+  display: flex;
+  min-height: 138px;
+  gap: 20px;
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--materials-white);
+}
+
+.materials-page__thumbnail {
+  display: flex;
+  width: 144px;
+  height: 102px;
+  flex: 0 0 144px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.materials-page__thumbnail img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.materials-page__thumbnail strong {
+  color: var(--materials-blue);
+  font-size: 23px;
+  line-height: 35px;
+}
+
+.materials-page__thumbnail span {
+  color: var(--materials-muted);
+  font-size: 10px;
+  line-height: 15px;
+}
+
+.materials-page__thumbnail--blue {
+  background: var(--materials-pale);
+}
+
+.materials-page__thumbnail--neutral {
+  background: var(--materials-bg);
+}
+
+.materials-page__thumbnail--dark {
+  color: var(--materials-white);
+  background: var(--materials-ink);
+}
+
+.materials-page__thumbnail--dark strong,
+.materials-page__thumbnail--dark span {
+  color: var(--materials-white);
+}
+
+.materials-page__item-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  padding-top: 1px;
+}
+
+.materials-page__summary {
+  display: grid;
+  gap: 5px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--materials-muted);
+  background: var(--materials-bg);
+  font-size: 11px;
+  line-height: 17px;
+}
+
+.materials-page__summary strong {
+  color: var(--materials-ink);
+  font-size: 11px;
+}
+
+.materials-page__summary p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.materials-page__summary--pending,
+.materials-page__summary--processing {
+  color: #175cd3;
+  background: #eff8ff;
+}
+
+.materials-page__summary--completed {
+  color: #067647;
+  background: #ecfdf3;
+}
+
+.materials-page__summary--failed {
+  color: #b42318;
+  background: #fef3f2;
+}
+
+.materials-page__item-copy h3 {
+  margin: 0 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 17px;
+  line-height: 26px;
+}
+
+.materials-page__item-copy > p {
+  margin: 0 0 8px;
+  color: var(--materials-muted);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.materials-page__item-copy .materials-page__item-memo {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--materials-ink);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.materials-page__item-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--materials-muted);
+  font-size: 11px;
+  line-height: 17px;
+}
+
+.materials-page__item-actions button {
+  padding: 0;
+  color: var(--materials-muted);
+  background: transparent;
+  font-size: 11px;
+}
+
+.materials-page__item-actions .materials-page__delete-button {
+  color: #b42318;
+}
+
+.materials-page__item-actions button:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
+.materials-page__library-help {
+  margin: 16px 0 0;
+  padding: 16px;
+  border-radius: 14px;
+  color: var(--materials-blue);
+  background: var(--materials-pale);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.materials-page__ai {
+  display: flex;
+  min-height: 126px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--materials-white);
+}
+
+.materials-page__ai h2,
+.materials-page__ai p {
+  margin: 0;
+}
+
+.materials-page__ai h2 {
+  margin-bottom: 6px;
+  font-size: 17px;
+  line-height: 26px;
+}
+
+.materials-page__ai p {
+  margin-bottom: 6px;
+  color: var(--materials-muted);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.materials-page__ai span,
+.materials-page__disclaimer {
+  color: var(--materials-muted);
+  font-size: 11px;
+  line-height: 17px;
+}
+
+.materials-page__disclaimer {
+  margin: 0;
+}
+
+@media (min-width: 1440px) {
+  .materials-page__main {
+    width: 1216px;
+    flex: 0 0 1216px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .materials-page__workspace {
+    grid-template-columns: minmax(320px, 400px) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 980px) {
+  .materials-page__main {
+    padding: 32px;
+  }
+
+  .materials-page__workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .materials-page__upload-card {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .materials-page {
+    display: block;
+  }
+
+  .materials-page__sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 18px;
+  }
+
+  .materials-page__workspace-label {
+    margin: 18px 0 12px;
+  }
+
+  .materials-page__nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .materials-page__nav-item,
+  .materials-page__private-note {
+    width: 100%;
+  }
+
+  .materials-page__private-note {
+    margin-top: 14px;
+  }
+
+  .materials-page__account {
+    margin-top: 18px;
+  }
+
+  .materials-page__main {
+    width: 100%;
+    min-height: 0;
+    padding: 28px 18px 40px;
+  }
+}
+
+@media (max-width: 540px) {
+  .materials-page__heading h1 {
+    font-size: 28px;
+    line-height: 42px;
+  }
+
+  .materials-page__upload-card {
+    padding: 22px;
+  }
+
+  .materials-page__library-header {
+    height: auto;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .materials-page__filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .materials-page__filters button {
+    width: 100%;
+  }
+
+  .materials-page__item {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .materials-page__thumbnail {
+    width: 100%;
+    flex-basis: 102px;
+  }
+
+  .materials-page__item-actions {
+    flex-wrap: wrap;
+  }
+
+  .materials-page__ai {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+}

@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from typing import Literal
 
 from fastapi import FastAPI, Request
@@ -6,8 +7,25 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from app.api import auth, errors, interactions, public_records, reports, studies, todos, users
-from app.core.config import settings
+from app.api import (
+    auth,
+    errors,
+    interactions,
+    materials,
+    public_records,
+    reports,
+    studies,
+    todos,
+    users,
+)
+from app.core.config import BACKEND_ROOT, settings
+from app.db.database import SessionLocal
+from app.services.material_analysis import OpenAIMaterialAnalyzer
+from app.services.material_analysis_worker import (
+    MaterialAnalysisCoordinator,
+    set_material_analysis_coordinator,
+)
+from app.services.material_storage import MaterialStorage
 
 
 class HealthResponse(BaseModel):
@@ -15,7 +33,31 @@ class HealthResponse(BaseModel):
     service: str
 
 
-app = FastAPI(title=settings.app_name)
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    coordinator: MaterialAnalysisCoordinator | None = None
+    if settings.environment != "test":
+        if not settings.openai_api_key:
+            raise RuntimeError(
+                "OPENAI_API_KEY가 없습니다. backend/.env에 값을 입력한 뒤 서버를 다시 시작해 주세요."
+            )
+        storage = MaterialStorage(BACKEND_ROOT / "uploads")
+        analyzer = OpenAIMaterialAnalyzer(
+            settings.openai_api_key,
+            BACKEND_ROOT / "uploads" / ".analysis",
+        )
+        coordinator = MaterialAnalysisCoordinator(SessionLocal, analyzer, storage)
+        coordinator.start()
+        set_material_analysis_coordinator(coordinator)
+    try:
+        yield
+    finally:
+        set_material_analysis_coordinator(None)
+        if coordinator is not None:
+            coordinator.stop()
+
+
+app = FastAPI(title=settings.app_name, lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.frontend_origin],
@@ -31,6 +73,7 @@ app.include_router(errors.router, prefix=settings.api_prefix)
 app.include_router(public_records.router, prefix=settings.api_prefix)
 app.include_router(interactions.router, prefix=settings.api_prefix)
 app.include_router(reports.router, prefix=settings.api_prefix)
+app.include_router(materials.router, prefix=settings.api_prefix)
 
 
 @app.exception_handler(RequestValidationError)

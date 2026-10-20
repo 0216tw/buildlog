@@ -23,6 +23,7 @@ export default function AppLayout({ navigate, children }) {
           <button onClick={() => navigate('/studies')}>공부 기록</button>
           <button onClick={() => navigate('/todos')}>할 일</button>
           <button onClick={() => navigate('/errors')}>오류 기록</button>
+          <button onClick={() => navigate('/materials')}>학습 자료함</button>
           <button onClick={() => navigate('/public')}>공개 기록</button>
           {user?.is_admin && <button onClick={() => navigate('/admin/reports')}>신고 관리</button>}
           <button onClick={() => navigate('/settings')}>설정</button>

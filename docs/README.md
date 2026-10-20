@@ -50,7 +50,7 @@ npm.cmd install
 npm.cmd run dev
 ```
 
-브라우저에서 `http://localhost:5173`을 엽니다. API 상태는 `http://127.0.0.1:8000/api/health`, API 문서는 `http://127.0.0.1:8000/docs`에서 확인할 수 있습니다.
+브라우저에서 `http://localhost:5173`을 엽니다. API 상태는 `http://localhost:8000/api/health`, API 문서는 `http://localhost:8000/docs`에서 확인할 수 있습니다. 프론트엔드와 API의 호스트 이름을 모두 `localhost`로 맞춰야 로그인 쿠키가 정상적으로 전달됩니다.
 
 ## 제공하는 기능
 
@@ -61,9 +61,12 @@ npm.cmd run dev
 - 기록 공개·비공개 전환과 공개 기록 검색
 - 공개 공부 기록·오류 기록의 댓글과 좋아요
 - 공개 기록·댓글 신고와 운영자 확인
+- PNG·JPG·MP4 한 개를 보관하는 비공개 학습 자료함
 - 너비 360px 이상의 반응형 화면
 
 기록은 처음 만들 때 비공개입니다. 공개 기록은 로그인한 다른 회원이 볼 수 있습니다. 댓글과 좋아요는 공개 공부 기록과 공개 오류 기록에서만 사용합니다.
+
+학습 자료함은 항상 비공개이며 작성자 본인만 목록, 원본 보기와 삭제를 사용할 수 있습니다. 자료 메타정보는 Supabase PostgreSQL에, 실제 파일은 FastAPI 서버의 `backend/uploads`에 저장됩니다.
 
 ## 테스트하기
 

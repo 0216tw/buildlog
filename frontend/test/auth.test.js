@@ -29,7 +29,7 @@ test('회원가입 요청은 입력값을 JSON으로 보내고 쿠키를 포함�
 
   await signupUser(input, fakeFetch)
 
-  assert.equal(captured.url, 'http://127.0.0.1:8000/api/auth/signup')
+  assert.equal(captured.url, 'http://localhost:8000/api/auth/signup')
   assert.equal(captured.options.method, 'POST')
   assert.equal(captured.options.credentials, 'include')
   assert.deepEqual(JSON.parse(captured.options.body), input)
@@ -40,13 +40,19 @@ test('로그인과 보호된 요청은 쿠키를 포함한다', async () => {
   const calls = []
   const fakeFetch = async (url, options) => {
     calls.push({ url, options })
-    return { ok: true, status: 200, json: async () => ({ id: 1 }) }
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({ id: 1, nickname: '학습자_1' }),
+    }
   }
 
   await loginUser({ email: 'learner@example.com', password: 'password123' }, fakeFetch)
-  await getCurrentUser(fakeFetch)
+  const currentUser = await getCurrentUser(fakeFetch)
   await updateNickname('새닉네임', fakeFetch)
 
+  assert.equal(calls[1].url, 'http://localhost:8000/api/auth/me')
+  assert.equal(currentUser.nickname, '학습자_1')
   assert.deepEqual(calls.map((call) => call.options.credentials), [
     'include',
     'include',
