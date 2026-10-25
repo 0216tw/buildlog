@@ -619,3 +619,30 @@ npm.cmd run dev
 ### 다음 작업
 
 - 사용자가 Notion 09 교안의 1-1부터 순서대로 실습 파일을 직접 만듭니다.
+
+## 26. 09 교안 독립 실습 구조로 재작성 (2026-10-21)
+
+### 완료한 내용
+
+- Notion 09 교안의 실습 코드를 기존 BuildLog의 React 라우팅, API 클라이언트, FastAPI 라우터와 완전히 분리했습니다.
+- 모든 실습 파일을 프로젝트 최상위의 `debug-practice/frontend`, `debug-practice/backend` 안에서만 만들도록 교안을 다시 작성했습니다.
+- 실습 frontend는 별도 `package.json`과 `5176` 포트, 실습 backend는 별도 `requirements.txt`, 가상환경, FastAPI 앱과 `8012` 포트를 사용합니다.
+- 기존 `frontend/`, `backend/`, 로그인, DB, `.env`, 디자인을 사용하거나 수정하지 않는다고 명시했습니다.
+- 프론트 `ReferenceError`, API 미작성 `404`, 주소 오타 `404`, 잘못된 데이터 `422`, backend `IndexError`와 `500`을 순서대로 만들고 고치는 코드와 AI 질문 예시를 넣었습니다.
+- 독립 환경에서 다시 만든 정상·오류 캡처 10장으로 기존 교안 이미지를 교체했습니다.
+
+### 확인 결과
+
+| 확인 항목 | 결과 |
+| --- | --- |
+| 독립 frontend 프로덕션 빌드 | 통과 |
+| 독립 backend API 확인 | 8개 통과 (`200`, `404`, `422`, `500` 포함) |
+| 독립 브라우저 캡처 | 10장 생성 및 육안 확인 |
+| Notion 교안 이미지 | 새 캡처 10장 첨부 확인 |
+| 기존 프로젝트 의존 표현 | `../api/client.js`, `DebugPracticePage`, `app.include_router`가 남지 않음을 확인 |
+| 기존 BuildLog 실행 코드 | 변경하지 않음 |
+
+### 다음 작업
+
+- 사용자가 Notion 교안의 `debug-practice/` 생성 단계부터 직접 실습합니다.
+- 실습이 끝나면 학생은 `debug-practice/` 폴더만 제거하고 기존 BuildLog는 그대로 유지합니다.
